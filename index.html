@@ -515,6 +515,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+const fakeLines = [
+  "Initializing system...",
+  "Bypassing firewall...",
+  "Access granted.",
+  "Loading Razoshi OS modules...",
+  "Connected to dark network.",
+  "Welcome, user."
+];
+
+let lineIndex = 0;
+
+function typeEffect() {
+  if (lineIndex >= fakeLines.length) return;
+
+  let text = fakeLines[lineIndex];
+  let i = 0;
+
+  let interval = setInterval(() => {
+    if (i < text.length) {
+      terminal.innerHTML += text.charAt(i);
+      i++;
+    } else {
+      terminal.innerHTML += "<br>";
+      clearInterval(interval);
+      lineIndex++;
+      setTimeout(typeEffect, 500);
+    }
+  }, 30);
+}
+
+typeEffect();
 </script>
 
   <div class="window" id="myWindow">
