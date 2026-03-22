@@ -9,10 +9,8 @@
   
 /* GENERAL */
   body {
-  background: black;
-  color: #fff;
-  font-family: monospace;
-}
+  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)),
+              url("https://images.unsplash.com/photo-1518770660439-4636190af475");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -310,11 +308,6 @@ canvas#matrix {
 
 <script>
 /* LOGIN */
-  function drawMatrix(){
-  // ...
-}
-
-setInterval(drawMatrix, 50);
 function startOS(){
   const login = document.getElementById("login");
   login.classList.add("hide");
@@ -326,23 +319,8 @@ const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
 function resizeCanvas(){
-  const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-function drawMatrix(){
-  ctx.fillStyle = "rgba(0,0,0,0.05)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.fillStyle = "#00ff88";
-  ctx.font = "16px monospace";
-
-  ctx.fillText("1", 100, 100); // ტესტისთვის
-}
-
-setInterval(drawMatrix, 50);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
