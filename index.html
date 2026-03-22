@@ -6,14 +6,19 @@
 <title>Razoshi OS</title>
 
 <style>
+  
 /* GENERAL */
-body {
-  background: #000;
+  body {
+  background: black;
   color: #fff;
   font-family: monospace;
-  margin: 0;
-  text-align: center;
-  overflow-x: hidden;
+}
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  color: #fff;
+  font-family: monospace;
 }
 
 /* LOGIN */
@@ -305,6 +310,11 @@ canvas#matrix {
 
 <script>
 /* LOGIN */
+  function drawMatrix(){
+  // ...
+}
+
+setInterval(drawMatrix, 50);
 function startOS(){
   const login = document.getElementById("login");
   login.classList.add("hide");
@@ -316,8 +326,23 @@ const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
 function resizeCanvas(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function drawMatrix(){
+  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle = "#00ff88";
+  ctx.font = "16px monospace";
+
+  ctx.fillText("1", 100, 100); // ტესტისთვის
+}
+
+setInterval(drawMatrix, 50);
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
@@ -342,14 +367,6 @@ function drawMatrix(){
     drops[i]++;
   }
 }
-
-function animateMatrix() {
-  drawMatrix();
-  drawParticles();
-  updateParticles();
-  requestAnimationFrame(animateMatrix);
-}
-animateMatrix();
 
 /* MUSIC PLAYER */
 const playlist = [
@@ -517,7 +534,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
-const fakeLines = [
+
+  const fakeLines = [
   "Initializing system...",
   "Bypassing firewall...",
   "Access granted.",
@@ -560,6 +578,10 @@ typeEffect();
     Hello from Razoshi OS 👾
   </div>
 </div>
+
+<button id="openBtn" style="margin-top:20px;">
+  Open Window
+</button>
 
 <button id="openBtn" style="margin-top:20px;">
   Open Window
