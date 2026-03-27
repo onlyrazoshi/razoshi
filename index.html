@@ -405,21 +405,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const terminal = document.getElementById("terminalLog");
 const input = document.getElementById("cmdInput");
-  let fs = {
-  "/": {
-    "readme.txt": "Welcome to Razoshi OS",
-    "notes.txt": "type ls",
-    "secret": {
-      "passwords.txt": "root: 1337"
-    }
-  }
-};
-
-let currentPath = "/";
-
-function getDir(path){
-  return path.split("/").filter(Boolean).reduce((dir, p) => dir[p], fs["/"]);
-}
 
 let history = [];
 let historyIndex = -1;
@@ -442,23 +427,8 @@ if(cmd === "help"){
 }
 
 else if(cmd === "ls"){
-  let dir = getDir(currentPath);
-
-  if(dir){
-    logTerminal("", Object.keys(dir).join("  "));
-  } else {
-    logTerminal("", "error reading directory");
-  }
-  
-  else if(cmd.startsWith("cat ")){
-  let f = cmd.split(" ")[1];
-  let dir = getDir(currentPath);
-
-  if(typeof dir[f] === "string"){
-    logTerminal("", dir[f]);
-  } else {
-    logTerminal("", "file not found");
-  }
+  logTerminal("", Object.keys(getDir(currentPath)).join("  "));
+}
 
 else if(cmd === "hack system"){
   let i = 0;
