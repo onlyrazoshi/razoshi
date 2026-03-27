@@ -592,27 +592,35 @@ document.addEventListener("DOMContentLoaded", () => {
     cpuSpan.innerText = Math.floor(Math.random()*100) + "%";
   }, 1000);
 
-  // IP 
- fetch("https://ipapi.co/json/")
-.then(res => res.json())
-.then(data => {
-  visitorInfoSpan.innerText =
-    data.ip + " — " + data.city + ", " + data.country_name;
-})
-.catch(() => {
-  visitorInfoSpan.innerText = "Guest user";
-});
+  // ✅ IP (STABLE + FALLBACK)
+  fetch("https://ipapi.co/json/")
+  .then(res => res.json())
+  .then(data => {
+    visitorInfoSpan.innerText =
+      data.ip + " — " + data.city + ", " + data.country_name;
+  })
+  .catch(() => {
+    // fallback
+    fetch("https://api.ipify.org?format=json")
+    .then(res => res.json())
+    .then(ip => {
+      visitorInfoSpan.innerText = ip.ip + " — Unknown location";
+    })
+    .catch(()=>{
+      visitorInfoSpan.innerText = "Guest user";
+    });
+  });
 
-  // VISITOR COUNTER 
+  // ✅ VISITOR COUNTER (NO RESET EVER)
   fetch("https://api.countapi.xyz/hit/razoshi-os/visits")
-.then(res => res.json())
-.then(data => {
-  document.getElementById("views").innerText =
-    "Visitors: " + data.value;
-})
-.catch(() => {
-  document.getElementById("views").innerText =
-    "Visitors: 1";
+  .then(res => res.json())
+  .then(data => {
+    viewsSpan.innerText = "Visitors: " + data.value;
+  })
+  .catch(() => {
+    viewsSpan.innerText = "Visitors: offline";
+  });
+
 });
   
 /* SMOOTH MOUSE GLOW */
