@@ -243,14 +243,26 @@ canvas#matrix {
 .content {
   padding: 10px;
 }
+#loadingBar {
+  width: 0%;
+  height: 5px;
+  background: #00ff88;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: width 2s ease;
+}
 </style>
 </head>
 <body>
+  
 
 <!-- LOGIN SCREEN -->
 <div id="login">
   <h1>Welcome to Razoshi OS</h1>
   <button onclick="startOS()">Enter</button>
+  
+  <div id="loadingBar"></div>
 </div>
 
 <!-- AVATAR AND HEADER -->
@@ -274,6 +286,10 @@ style="width:80%; max-width:700px; background:black; color:#00ff88; border:1px s
 <!-- VISITOR + CPU PANEL -->
 <div id="visitorPanel">
   CPU Usage: <span id="cpuUsage">0%</span> | Guest: <span id="visitorInfo">loading...</span>
+  
+  <br>
+  
+  <span id="views">Visitors: loading...</span>
 </div>
 
 <!-- MUSIC PLAYER -->
@@ -307,11 +323,18 @@ style="width:80%; max-width:700px; background:black; color:#00ff88; border:1px s
 <div id="mouseGlow"></div>
 
 <script>
+  
 /* LOGIN */
 function startOS(){
   const login = document.getElementById("login");
-  login.classList.add("hide");
-  setTimeout(()=>{ login.style.display="none"; }, 500);
+  const bar = document.getElementById("loadingBar");
+
+  bar.style.width = "100%"; 
+
+  setTimeout(()=>{
+    login.classList.add("hide");
+    setTimeout(()=>{ login.style.display="none"; }, 500);
+  }, 2000);
 }
 
 /* MATRIX */
@@ -405,6 +428,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const terminal = document.getElementById("terminalLog");
 const input = document.getElementById("cmdInput");
+  let fs = {
+  "/": {
+    "readme.txt": "Welcome to Razoshi OS",
+    "notes.txt": "type ls",
+    "secret": {
+      "passwords.txt": "root: 1337"
+    }
+  }
+};
+
+let currentPath = "/";
+
+function getDir(path){
+  return path.split("/").filter(Boolean).reduce((dir, p) => dir[p], fs["/"]);
+}
 
 let history = [];
 let historyIndex = -1;
@@ -427,9 +465,25 @@ if(cmd === "help"){
 }
 
 else if(cmd === "ls"){
-  logTerminal("", Object.keys(getDir(currentPath)).join("  "));
-}
+  let dir = getDir(currentPath);
 
+  if(dir){
+    logTerminal("", Object.keys(dir).join("  "));
+  } else {
+    logTerminal("", "error reading directory");
+  }
+}
+  
+ else if(cmd.startsWith("cat ")){
+  let f = cmd.split(" ")[1];
+  let dir = getDir(currentPath);
+
+  if(dir && typeof dir[f] === "string"){
+    logTerminal("", dir[f]);
+  } else {
+    logTerminal("", "file not found");
+  }  
+}
 else if(cmd === "hack system"){
   let i = 0;
   let interval = setInterval(() => {
@@ -514,7 +568,6 @@ const repoContainer = document.getElementById("repos");
 .then(data => {
 
   data.slice(0,6).forEach(repo => {
-    logTerminal(repo.name, repo.description || "no description");
 
     const div = document.createElement("div");
     div.className = "repo";
@@ -528,25 +581,40 @@ const repoContainer = document.getElementById("repos");
 })
 .catch(err => logTerminal("error", "Could not fetch repos"));
 
-/* VISITOR PANEL & CPU */
-const cpuSpan = document.getElementById("cpuUsage");
-const visitorInfoSpan = document.getElementById("visitorInfo");
+document.addEventListener("DOMContentLoaded", () => {
 
-// Fake CPU usage
-setInterval(()=>{
-  cpuSpan.innerText = Math.floor(Math.random()*100) + "%";
-}, 1000);
+  const cpuSpan = document.getElementById("cpuUsage");
+  const visitorInfoSpan = document.getElementById("visitorInfo");
+  const viewsSpan = document.getElementById("views");
 
-// Visitor info
-fetch("https://ipapi.co/json/")
+  // CPU
+  setInterval(()=>{
+    cpuSpan.innerText = Math.floor(Math.random()*100) + "%";
+  }, 1000);
+
+  // IP 
+ fetch("https://ipapi.co/json/")
 .then(res => res.json())
-.then(data=>{
-  visitorInfoSpan.innerText = `${data.ip} — ${data.city}, ${data.country_name}`;
+.then(data => {
+  visitorInfoSpan.innerText =
+    data.ip + " — " + data.city + ", " + data.country_name;
 })
-.catch(err=>{
-  visitorInfoSpan.innerText = "Visitor info unavailable";
+.catch(() => {
+  visitorInfoSpan.innerText = "Guest user";
 });
 
+  // VISITOR COUNTER 
+  fetch("https://api.countapi.xyz/hit/razoshi-os/visits")
+  .then(res => res.json())
+  .then(data => {
+    viewsSpan.innerText = "Visitors: " + data.value;
+  })
+  .catch(() => {
+    viewsSpan.innerText = "Visitors: offline";
+  });
+
+});
+  
 /* SMOOTH MOUSE GLOW */
 const glow = document.getElementById("mouseGlow");
 let mouseX=0, mouseY=0, glowX=0, glowY=0;
@@ -642,6 +710,15 @@ function animateMatrix() {
 }
 animateMatrix();
   
+setInterval(()=>{
+  document.getElementById("status").innerText =
+    Math.random() > 0.2 ? "● online" : "● lagging...";
+}, 3000);
+
+window.onerror = function(msg, url, line){
+  console.log("Error:", msg, "Line:", line);
+  return true;
+};
 </script>
 
   <div class="window" id="myWindow">
@@ -657,5 +734,8 @@ animateMatrix();
 <button id="openBtn" style="margin-top:20px;">
   Open Window
 </button>
+  
+<p id="status" style="color:#00ff88; text-align:center;">● online</p>
+  
 </body>
 </html>
