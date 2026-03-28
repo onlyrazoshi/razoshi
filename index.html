@@ -272,7 +272,7 @@ canvas#matrix {
 
 <!-- LINKS -->
 <div class="links">
-  <a class="button" href="https://discord.gg/eqfSepRC" target="_blank">Razoshi's Brotherhood Discord Server</a>
+  <a class="button" href="https://discord.gg/ZtkBZamr" target="_blank">Razoshi's Brotherhood Discord Server</a>
   <a class="button" href="https://github.com/onlyrazoshi" target="_blank">Razoshi's Github</a>
   <a class="button" href="https://guns.lol/onlyrazoshi" target="_blank">Razoshi's gunz.lol</a>
 </div>
@@ -323,6 +323,7 @@ style="width:80%; max-width:700px; background:black; color:#00ff88; border:1px s
 <div id="mouseGlow"></div>
 
 <script>
+  
   
 /* LOGIN */
 function startOS(){
@@ -437,6 +438,18 @@ const input = document.getElementById("cmdInput");
     }
   }
 };
+  function saveFS(){
+  localStorage.setItem("fs", JSON.stringify(fs));
+}
+
+function loadFS(){
+  let data = localStorage.getItem("fs");
+  if(data){
+    fs = JSON.parse(data);
+  }
+}
+  
+loadFS();
 
 let currentPath = "/";
 
@@ -475,6 +488,7 @@ else if(cmd === "ls"){
 }
   
  else if(cmd.startsWith("cat ")){
+   
   let f = cmd.split(" ")[1];
   let dir = getDir(currentPath);
 
@@ -483,6 +497,83 @@ else if(cmd === "ls"){
   } else {
     logTerminal("", "file not found");
   }  
+}
+   // 🔥 TOUCH
+else if(cmd.startsWith("touch ")){
+  let filename = cmd.split(" ")[1];
+  let dir = getDir(currentPath);
+
+  if(dir){
+    if(dir[filename]){
+      logTerminal("", "file already exists");
+    } else {
+      dir[filename] = "";
+      saveFS();
+      logTerminal("", "file created: " + filename);
+    }
+  }
+}
+
+// 🔥 ECHO
+else if(cmd.startsWith("echo ")){
+  let parts = cmd.split(">");
+
+  if(parts.length === 2){
+    let text = parts[0].replace("echo","").trim();
+    let file = parts[1].trim();
+
+    let dir = getDir(currentPath);
+
+    if(dir){
+      dir[file] = text;
+      saveFS();
+      logTerminal("", "written to " + file);
+    }
+  } else {
+    logTerminal("", "usage: echo text > file.txt");
+  }
+}
+
+// 🔥 RM
+else if(cmd.startsWith("rm ")){
+  let filename = cmd.split(" ")[1];
+  let dir = getDir(currentPath);
+
+  if(dir && dir[filename]){
+    delete dir[filename];
+    saveFS();
+    logTerminal("", "deleted: " + filename);
+  } else {
+    logTerminal("", "file not found");
+  }
+}
+// 🔥 GODMODE HACK
+else if(cmd.startsWith("hack ")){
+  let target = cmd.split(" ")[1];
+
+  logTerminal("", "Connecting to " + target + " ...");
+
+  let steps = [
+    "Resolving IP...",
+    "Establishing secure connection...",
+    "Bypassing firewall...",
+    "Injecting payload...",
+    "Brute forcing credentials...",
+    "Decrypting data..."
+  ];
+
+  let i = 0;
+
+  let interval = setInterval(()=>{
+    if(i < steps.length){
+      logTerminal("", steps[i]);
+      i++;
+    } else {
+      clearInterval(interval);
+      logTerminal("", "[✓] ACCESS GRANTED to " + target);
+      startHackVisual(); 
+    }
+  }, 800);
 }
 else if(cmd === "hack system"){
   let i = 0;
@@ -494,6 +585,20 @@ else if(cmd === "hack system"){
       logTerminal("", "[✓] password cracked: root_7391");
     }
   }, 200);
+}
+ 
+  let i = 0;
+
+  let interval = setInterval(()=>{
+    if(i < steps.length){
+      logTerminal("", steps[i]);
+      i++;
+    } else {
+      clearInterval(interval);
+      logTerminal("", "[✓] ACCESS GRANTED to " + target);
+      startHackVisual(); // 🔥 effect
+    }
+  }, 800);
 }
 
 else if(cmd === "whoami"){
@@ -513,7 +618,7 @@ else if(cmd === "about"){
 }
 
 else if(cmd === "discord"){
-  window.open("https://discord.gg/eqfSepRC");
+  window.open("https://discord.gg/ZtkBZamr");
 }
 
 else if(cmd === "github"){
