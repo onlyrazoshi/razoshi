@@ -547,8 +547,18 @@ else if(cmd.startsWith("rm ")){
     logTerminal("", "file not found");
   }
 }
-// 🔥 GODMODE HACK
-else if(cmd.startsWith("hack ")){
+else if(cmd === "hack system"){
+  let i = 0;
+  let interval = setInterval(() => {
+    logTerminal("", "cracking password: " + Math.random().toString(36).substring(2,8));
+    i++;
+    if(i > 10){
+      clearInterval(interval);
+      logTerminal("", "[✓] password cracked: root_7391");
+    }
+  }, 200);
+}
+  else if(cmd.startsWith("hack ")){
   let target = cmd.split(" ")[1];
 
   logTerminal("", "Connecting to " + target + " ...");
@@ -562,31 +572,6 @@ else if(cmd.startsWith("hack ")){
     "Decrypting data..."
   ];
 
-  let i = 0;
-
-  let interval = setInterval(()=>{
-    if(i < steps.length){
-      logTerminal("", steps[i]);
-      i++;
-    } else {
-      clearInterval(interval);
-      logTerminal("", "[✓] ACCESS GRANTED to " + target);
-      startHackVisual(); 
-    }
-  }, 800);
-}
-else if(cmd === "hack system"){
-  let i = 0;
-  let interval = setInterval(() => {
-    logTerminal("", "cracking password: " + Math.random().toString(36).substring(2,8));
-    i++;
-    if(i > 10){
-      clearInterval(interval);
-      logTerminal("", "[✓] password cracked: root_7391");
-    }
-  }, 200);
-}
- 
   let i = 0;
 
   let interval = setInterval(()=>{
